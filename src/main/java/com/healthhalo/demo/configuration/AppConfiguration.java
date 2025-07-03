@@ -50,7 +50,8 @@ public class AppConfiguration {
 
     @Autowired
     private JwtFilter jwtFilter;
-    private JwtService jwtService = new JwtService();
+    @Autowired
+    private JwtService jwtService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Bean
@@ -91,7 +92,7 @@ public class AppConfiguration {
 
                 UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
                 UserData userData = userService.fetchDataByUsername(userPrincipal.getUsername());
-                AuthResponse authResponse = new AuthResponse(userData.getUsername(),userData.getEmail(),userData.getRole(),jwtService.getToken(userData));
+                AuthResponse authResponse = new AuthResponse(userData.getUsername(),userData.getEmail(),userData.getRole(),jwtService.generateToken(userData));
                 response.getWriter().write(objectMapper.writeValueAsString(authResponse));
         });
 

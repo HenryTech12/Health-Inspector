@@ -16,9 +16,9 @@ public class AuthController {
     }
 
     @GetMapping("/token")
-    public AuthResponse getJwtToken(@RequestBody AuthRequest authRequest) {
+    public String getJwtToken(@RequestBody AuthRequest authRequest) {
         System.out.println("hello bro");
-        return null;
+        return "Hello Boss";
     }
 
 }
