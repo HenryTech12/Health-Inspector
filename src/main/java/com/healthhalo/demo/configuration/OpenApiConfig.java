@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         description = "Local Enviroment"
                 ),
                 @Server(
-                        url = "http://",
+                        url = "https://health-inspector.onrender.com",
                         description = "Production Environment"
                 )
         },
