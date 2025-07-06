@@ -29,19 +29,19 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         String token = null;
-        String username = null;
+        String email = null;
 
-        if(header != null && header.startsWith("Bearer ")) {
+        if(header != null && header.startsWith("Bearer")) {
             //extract token from authorization header
             token = header.substring(7);
 
-            //extract username from token
-            username = jwtService.extractUsername(token);
+            //extract email from token
+            email = jwtService.extractEmail(token);
 
             //checks if user is not authenticated
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
-                //check if token is not expired and the username from db matches the username in the token
+            if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = myUserDetailsService.loadUserByUsername(email);
+                //check if token is not expired and the email from db matches the email in the token
                 if(jwtService.validateToken(token,userDetails)) {
 
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

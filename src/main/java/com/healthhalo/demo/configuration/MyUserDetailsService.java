@@ -19,11 +19,12 @@ public class MyUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<UserModel> userModel =
-                userRepository.findByUsername(username);
+                userRepository.findByEmail(email);
+
         UserData userData = userModel.map(
-                data -> new UserData(data.getEmail(),data.getUsername(), data.getPassword(),data.getRole())
+                data -> new UserData(data.getFullname(),data.getEmail(),data.getUsername(), data.getPassword(),data.getRole())
         ).orElse(new UserData());
 
         return new UserPrincipal(userData);

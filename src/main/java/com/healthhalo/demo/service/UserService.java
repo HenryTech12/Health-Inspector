@@ -36,6 +36,12 @@ public class UserService {
                 findByUsername(username).orElse(new UserModel()));
     }
 
+    public UserData fetchDataByEmail(String email) {
+        log.info("user data with email: {} fetched", email);
+        return userMapper.convertToDTO(userRepository.
+                findByEmail(email).orElse(new UserModel()));
+    }
+
     public void deleteUserDataByUsername(String username) {
         log.info("user data with username: {} removed from db",username);
         userRepository.deleteByUsername(username);

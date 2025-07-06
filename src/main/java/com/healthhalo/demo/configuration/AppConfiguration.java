@@ -26,6 +26,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Slf4j
 @Configuration
@@ -60,6 +67,19 @@ public class AppConfiguration {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:5173")); // frontend port
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true); // important for cookies or auth headers
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
+    @Bean
     public UserDetailsService getUserDetailsService() {
         return myUserDetailsService;
     }
@@ -91,7 +111,7 @@ public class AppConfiguration {
                 objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
                 UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-                UserData userData = userService.fetchDataByUsername(userPrincipal.getUsername());
+                UserData userData = userService.fetchDataByEmail(userPrincipal.getUsername());
                 AuthResponse authResponse = new AuthResponse(userData.getUsername(),userData.getEmail(),userData.getRole(),jwtService.generateToken(userData));
                 response.getWriter().write(objectMapper.writeValueAsString(authResponse));
         });
@@ -108,8 +128,9 @@ public class AppConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager manager) throws Exception {
         http.
-            csrf(CsrfConfigurer::disable).
-                authorizeHttpRequests(requests -> {
+            csrf(CsrfConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(requests -> {
             requests.requestMatchers(publicUrls)
                     .permitAll()
                     .anyRequest().authenticated();

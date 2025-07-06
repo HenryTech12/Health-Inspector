@@ -23,7 +23,7 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
             AuthRequest authRequest = objectMapper.readValue(request.getInputStream(), AuthRequest.class);
             if(!Objects.isNull(authRequest)) {
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(authRequest.getUsername(),authRequest.getPassword());
+                        new UsernamePasswordAuthenticationToken(authRequest.getEmail(),authRequest.getPassword());
                 setDetails(request,authToken);
                 return this.getAuthenticationManager().authenticate(authToken);
             }
