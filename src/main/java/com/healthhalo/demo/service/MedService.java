@@ -99,7 +99,7 @@ public class MedService {
                 throw new RuntimeException(e);
             }
             HttpEntity<?> http = new HttpEntity<>(body);
-            return restTemplate.exchange(ai_url+"/book_appointment", HttpMethod.POST,http,String.class).getBody();
+            return restTemplate.exchange(ai_url+"/set_reminder", HttpMethod.POST,http,String.class).getBody();
         }
         return null;
     }
@@ -126,7 +126,7 @@ public class MedService {
             throw new RuntimeException(e);
         }
         HttpEntity<?> http = new HttpEntity<>(body);
-        return restTemplate.exchange(ai_url+"/book_appointment", HttpMethod.POST,http,String.class).getBody();
+        return restTemplate.exchange(ai_url+"/mental_health_check", HttpMethod.POST,http,String.class).getBody();
     }
 
     public String aiQuery(AIRequest data) {
