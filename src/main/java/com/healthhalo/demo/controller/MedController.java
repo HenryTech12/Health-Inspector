@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.Objects;
 
@@ -26,27 +27,27 @@ public class MedController {
     }
 
     @PostMapping("/check_symptoms")
-    public ResponseEntity<String> checkforSymptoms(@RequestBody  SymptomInput data){
+    public ResponseEntity<String> checkforSymptoms(@RequestBody  SymptomInput data) throws URISyntaxException {
         return new ResponseEntity<>(medService.checkForSymptoms(data), HttpStatus.OK);
     }
 
     @GetMapping("/health_tip")
-    public ResponseEntity<String> getHealthTip() {
+    public ResponseEntity<String> getHealthTip() throws URISyntaxException {
         return new ResponseEntity<>(medService.getHealthTip(),HttpStatus.OK);
     }
 
     @PostMapping("/set_reminder")
-    public ResponseEntity<String> setReminder(Reminder reminder) {
+    public ResponseEntity<String> setReminder(Reminder reminder) throws URISyntaxException {
         return new ResponseEntity<>(medService.setReminder(reminder),HttpStatus.OK);
     }
 
     @PostMapping("/book_appointment")
-    public ResponseEntity<String> bookAppointment(@RequestBody Appointment appointment) {
+    public ResponseEntity<String> bookAppointment(@RequestBody Appointment appointment) throws URISyntaxException {
         return new ResponseEntity<>(medService.bookAppointment(appointment),HttpStatus.OK);
     }
 
     @PostMapping("/mental_health_check")
-    public ResponseEntity<String> getMentalCheck(@RequestBody int score) {
+    public ResponseEntity<String> getMentalCheck(@RequestBody int score) throws URISyntaxException {
         return new ResponseEntity<>(medService.mentalHealthCheck(score),HttpStatus.OK);
     }
 
@@ -56,7 +57,7 @@ public class MedController {
     }
 
     @PostMapping("/ai/query")
-    public ResponseEntity<String> aiQuery(AIRequest data) {
+    public ResponseEntity<String> aiQuery(AIRequest data) throws URISyntaxException {
         return new ResponseEntity<>(medService.aiQuery(data),HttpStatus.OK);
     }
 }

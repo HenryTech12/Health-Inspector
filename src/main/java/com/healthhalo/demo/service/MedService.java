@@ -16,6 +16,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Slf4j
@@ -49,7 +52,7 @@ public class MedService {
         }
     }
 
-    public String checkForSymptoms(SymptomInput data) {
+    public String checkForSymptoms(SymptomInput data) throws URISyntaxException {
         if(!Objects.isNull(data)) {
             String body = null;
             try {
@@ -58,7 +61,8 @@ public class MedService {
                 throw new RuntimeException(e);
             }
             HttpEntity<?> http = new HttpEntity<>(body);
-            return restTemplate.exchange(ai_url+"/check_symptoms", HttpMethod.POST,http,String.class).getBody();
+            System.out.println(ai_url);
+            return restTemplate.exchange(new URI(ai_url+"/check_symptoms"), HttpMethod.POST,http,String.class).getBody();
         }
         return null;
     }
@@ -74,10 +78,11 @@ public class MedService {
             String response = "";
             try {
                 HttpEntity<?> http = new HttpEntity<>(body);
-                response = restTemplate.exchange(ai_url + "/record_health", HttpMethod.POST, http, String.class).getBody();
+                response = restTemplate.exchange(new URI(ai_url+"/record_health"), HttpMethod.POST, http, String.class).getBody();
                 return response;
-            }
-            finally {
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            } finally {
                 healthRecordRepository.save(healthRecordMapper.convertToModel(healthRecord));
                 log.info(response);
                 System.out.println("Response: "+response);
@@ -86,11 +91,12 @@ public class MedService {
         return null;
     }
 
-    public String getHealthTip() {
-        return  restTemplate.getForEntity(ai_url+"/health_tip",String.class).getBody();
+    public String getHealthTip() throws URISyntaxException {
+        System.out.println(ai_url);
+        return  restTemplate.getForEntity(new URI(ai_url+"/health_tip"),String.class).getBody();
     }
 
-    public String setReminder(Reminder reminder) {
+    public String setReminder(Reminder reminder) throws URISyntaxException {
         if(!Objects.isNull(reminder)) {
             String body = null;
             try {
@@ -99,12 +105,12 @@ public class MedService {
                 throw new RuntimeException(e);
             }
             HttpEntity<?> http = new HttpEntity<>(body);
-            return restTemplate.exchange(ai_url+"/set_reminder", HttpMethod.POST,http,String.class).getBody();
+            return restTemplate.exchange(new URI(ai_url+"/set_reminder"), HttpMethod.POST,http,String.class).getBody();
         }
         return null;
     }
 
-    public String bookAppointment(Appointment appointment) {
+    public String bookAppointment(Appointment appointment) throws URISyntaxException {
         if(!Objects.isNull(appointment)) {
             String body = null;
             try {
@@ -113,12 +119,12 @@ public class MedService {
                 throw new RuntimeException(e);
             }
             HttpEntity<?> http = new HttpEntity<>(body);
-            return restTemplate.exchange(ai_url+"/book_appointment", HttpMethod.POST,http,String.class).getBody();
+            return restTemplate.exchange(new URI(ai_url+"/book_appointment"), HttpMethod.POST,http,String.class).getBody();
         }
         return null;
     }
 
-    public String mentalHealthCheck(int score) {
+    public String mentalHealthCheck(int score) throws URISyntaxException {
         String body = null;
         try {
             body = objectMapper.writeValueAsString(score);
@@ -126,10 +132,10 @@ public class MedService {
             throw new RuntimeException(e);
         }
         HttpEntity<?> http = new HttpEntity<>(body);
-        return restTemplate.exchange(ai_url+"/mental_health_check", HttpMethod.POST,http,String.class).getBody();
+        return restTemplate.exchange(new URI(ai_url+"/mental_health_check"), HttpMethod.POST,http,String.class).getBody();
     }
 
-    public String aiQuery(AIRequest data) {
+    public String aiQuery(AIRequest data) throws URISyntaxException {
         if(!Objects.isNull(data)) {
             String body = null;
             try {
@@ -138,7 +144,7 @@ public class MedService {
                 throw new RuntimeException(e);
             }
             HttpEntity<?> http = new HttpEntity<>(body);
-            return restTemplate.exchange(ai_url+"/ai-query", HttpMethod.POST,http,String.class).getBody();
+            return restTemplate.exchange(new URI(ai_url+"/ai-query"), HttpMethod.POST,http,String.class).getBody();
         }
         return null;
     }
